@@ -10,12 +10,12 @@ function basicDetails(user) {
   }
   function generateJwtToken(user) {
     // create a jwt token containing the user id that expires in 15 minutes (mới set lại 360 phút)
-    return jwt.sign({ sub: user.id, id: user.id }, config.secret, {
+    return jwt.sign({ sub: user._id, id: user._id }, config.secret, {
       expiresIn: "360m",
     });
   }
   function randomTokenString() {
-    return crypto.randomBytes(40).toString("hex");
+    return crypto.randomBytes(64).toString("hex");
   }
 
   function generateRefreshToken(user, ipAddress) {
@@ -30,6 +30,7 @@ function basicDetails(user) {
 async function authenticate({ username, password, ipAddress }) {
     const user = await User.findOne({ username : username }).populate("role");
     
+    
     if (!user || !bcrypt.compareSync(password, user.password)) {
       return {
         status: 0,
@@ -39,6 +40,7 @@ async function authenticate({ username, password, ipAddress }) {
     // authentication successful so generate jwt and refresh tokens
     const jwtToken = generateJwtToken(user);
     const refreshToken = generateRefreshToken(user, ipAddress);
+    
     // save refresh token
     await refreshToken.save();
     return {
@@ -53,5 +55,6 @@ async function authenticate({ username, password, ipAddress }) {
 
 
 module.exports = {
-    authenticate
+    authenticate,
+    randomTokenString
 }

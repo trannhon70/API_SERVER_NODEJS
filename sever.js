@@ -39,8 +39,8 @@ const corsOptions = {
   const  app = express();
 
   //cors
-//   app.use(cors(corsOptions));
-//   app.use(fileUpload());
+  app.use(cors(corsOptions));
+  app.use(fileUpload());
   // const 
 
 const server = require("http").createServer(app)
@@ -50,7 +50,7 @@ if (process.env.NODE_ENV === "production") {
 
 //middlewares
 app.use(morgan("dev"))
-// app.use(cookieParser());
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 //db
@@ -76,7 +76,7 @@ server.listen(portServer, () => {
     console.log(`Servers running at localhost:${portServer}`);
 })
 
-app.use("/api", userRouter)
+app.use("/api/user", userRouter)
 
 function initial(){
     userModel.estimatedDocumentCount((err, count)=>{
