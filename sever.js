@@ -11,6 +11,7 @@ require("dotenv").config();
 const fileUpload = require("express-fileupload");
 
 const userRouter = require("./routers/user.router");
+const roleRouter = require("./routers/role.router")
 const userModel = require("./models/user.model");
 const roleModel = require("./models/role.model")
 var origin_urls;
@@ -76,7 +77,8 @@ server.listen(portServer, () => {
     console.log(`Servers running at localhost:${portServer}`);
 })
 
-app.use("/api/user", userRouter)
+app.use("/api/user", userRouter);
+app.use("/api/role", roleRouter);
 
 function initial(){
     userModel.estimatedDocumentCount((err, count)=>{
