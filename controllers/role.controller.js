@@ -1,8 +1,24 @@
+const RoleModel = require("../models/role.model");
 
 
-const createRole = (req, res, next) => {
+const createRole = async(req, res, next) => {
     try {
-        
+        const check = RoleModel.findOne({name: req.body.name})
+        if(!check){
+            const result = await RoleModel.create({...req.body})
+            return res.status(200).json(
+                {
+                    status: 1,
+                    message:"create role success!"
+                }
+            )
+        }
+        return res.status(400).json(
+            {
+                status: 0,
+                message: "name check already exist!"
+            }
+        )
     } catch (error) {
         console.log(error);
         return res.status(500).json()

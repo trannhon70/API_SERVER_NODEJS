@@ -5,9 +5,9 @@ const authorize = require("../middleware/authorize");
 
 router.post("/login", authenticateSchema, authenticate);
 router.post("/register", register);
-router.get("/getbyId/:id", getByIdUser);
-router.put("/update/:id", updateUser);
-router.delete("/delete/:id", deleteUser);
-router.get("/getpaging", getpagingUser);
+router.get("/getbyId/:id",authorize(), getByIdUser);
+router.put("/update/:id",authorize(), updateUser);
+router.delete("/delete/:id",authorize(), deleteUser);
+router.get("/getpaging",authorize(), getpagingUser);
 
 module.exports = router
