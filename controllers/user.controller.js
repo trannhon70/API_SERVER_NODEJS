@@ -86,7 +86,7 @@ const updateUser = async (req, res , next) => {
   try {
     const id = req.params.id
     if(id){
-      const result = UserModal.findByIdAndUpdate({id,...req.body})
+      const result = await UserModal.findByIdAndUpdate(id,{...req.body})
       return res.status(200).json({
         status: 1,
         message: "get by id success!",
@@ -140,6 +140,11 @@ const getpagingUser = async (req, res , next) => {
 
     const data = await UserModal.find(searchObj).skip(pageSize * pageIndex - pageSize)
     .limit(parseInt(pageSize)).sort({createdAt: "desc"})
+    if(data.length == 0){
+      pageIndex = 1
+      data = await UserModal.find(searchObj).skip(pageSize * pageIndex - pageSize)
+      .limit(parseInt(pageSize)).sort({createdAt: "desc"})
+    }
     const count = await UserModal.find(searchObj).countDocuments();
     let totalPages = Math.ceil(count / pageSize);
 

@@ -1,36 +1,34 @@
-const brandModel = require("../models/brand.model");
-
-const createBrand = async (req, res, next) => {
+const productModel = require("../models/product.model");
+const createProduct = async (req, res, next) => {
   try {
     const name = req.body.name;
-    const check = await brandModel.findOne({ name: name.trim() });
-    if (!check || check === null) {
-      const result = await brandModel.create({ ...req.body });
+    const check = await productModel.findOne({ name });
+    if (!check) {
+      const result = await productModel.create({ ...req.body });
       return res.status(200).json({
         result,
         status: 1,
-        message: "create brand name success!",
+        message: "create product success!",
       });
     }
     return res.status(400).json({
       status: 0,
-      message: "brand name check already exits!",
+      message: "Check name already exists!",
     });
   } catch (error) {
     console.log(error);
     return res.status(404).json();
   }
 };
-
-const updateBrand = async (req, res, next) => {
+const updateProduct = async (req, res, next) => {
   try {
     const id = req.params.id;
     if (id) {
-      const result = await brandModel.findByIdAndUpdate(id, { ...req.body });
+      const result = await productModel.findByIdAndUpdate(id, { ...req.body });
       return res.status(200).json({
-        status: 1,
         result,
-        message: "update success!",
+        status: 1,
+        message: "Update product success!",
       });
     }
     return res.status(400).json({
@@ -43,15 +41,15 @@ const updateBrand = async (req, res, next) => {
   }
 };
 
-const deleteBrand = async (req, res, next) => {
+const deleteProduct = async (req, res, next) => {
   try {
     const id = req.params.id;
     if (id) {
-      const result = await brandModel.findByIdAndDelete(id);
+      const result = await productModel.findByIdAndDelete(id);
       return res.status(200).json({
-        status: 1,
         result,
-        message: "Delete brand success!",
+        status: 1,
+        message: "Delete product success!",
       });
     }
     return res.status(400).json({
@@ -63,7 +61,8 @@ const deleteBrand = async (req, res, next) => {
     return res.status(404).json();
   }
 };
-const getpagingBrand = async (req, res, next) => {
+
+const getpagingProduct = async (req, res, next) => {
   try {
     const pageIndex = req.query.pageIndex || 1;
     const pageSize = req.query.pageSize || 10;
@@ -73,18 +72,20 @@ const getpagingBrand = async (req, res, next) => {
       searchObj.name = { $regex: ".*" + search + ".*" };
     }
 
-    const data = await brandModel.find(searchObj)
+    const data = await productModel
+      .find(searchObj)
       .skip(pageSize * pageIndex - pageSize)
       .limit(parseInt(pageSize))
       .sort({ createdAt: "desc" });
     if (data.length == 0) {
       pageIndex = 1;
-      data = await brandModel.find(searchObj)
+      data = await productModel
+        .find(searchObj)
         .skip(pageSize * pageIndex - pageSize)
         .limit(parseInt(pageSize))
         .sort({ createdAt: "desc" });
     }
-    const count = await brandModel.find(searchObj).countDocuments();
+    const count = await productModel.find(searchObj).countDocuments();
     let totalPages = Math.ceil(count / pageSize);
 
     return res.status(200).json({
@@ -100,8 +101,8 @@ const getpagingBrand = async (req, res, next) => {
   }
 };
 module.exports = {
-  createBrand,
-  updateBrand,
-  deleteBrand,
-  getpagingBrand,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  getpagingProduct,
 };
