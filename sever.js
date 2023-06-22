@@ -6,14 +6,15 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
-// const swaggerUI = require("swagger-ui-express");
-// const swaggerJsDoc = require("swagger-jsdoc");
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 const fileUpload = require("express-fileupload");
 
 const userRouter = require("./routers/user.router");
 const roleRouter = require("./routers/role.router")
 const userModel = require("./models/user.model");
-const roleModel = require("./models/role.model")
+const roleModel = require("./models/role.model");
+const options = require("./config/options");
 var origin_urls;
 if(process.env.NODE_ENV == "development"){
     origin_urls =  [
@@ -38,7 +39,8 @@ const corsOptions = {
     preflightContinue: false,
   };
   const  app = express();
-
+  const specs = swaggerJsdoc(options);
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
   //cors
   app.use(cors(corsOptions));
   app.use(fileUpload());

@@ -1,0 +1,52 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Role API",
+      "description": "API endpoints for role management",
+      "version": "1.0.0"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3000"
+      }
+    ],
+    "paths": {
+      "/create": {
+        "post": {
+          "summary": "Create role",
+          "tags": ["Role"],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Role"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Role": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "permissions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
