@@ -12,6 +12,8 @@ const fileUpload = require("express-fileupload");
 
 const userRouter = require("./routers/user.router");
 const roleRouter = require("./routers/role.router")
+const brandRouter = require("./routers/brand.router");
+const productRouter = require("./routers/product.router")
 const userModel = require("./models/user.model");
 const roleModel = require("./models/role.model");
 const options = require("./config/options");
@@ -81,6 +83,9 @@ server.listen(portServer, () => {
 
 app.use("/api/user", userRouter);
 app.use("/api/role", roleRouter);
+app.use("/api/brand", brandRouter);
+app.use("/api/product", productRouter);
+
 
 function initial(){
     userModel.estimatedDocumentCount((err, count)=>{
@@ -111,7 +116,7 @@ function initial(){
           console.log("added 'Editor' to roles collection");
         });
         new roleModel({
-          name: "user", // bien tap vien
+          name: "User", // bien tap vien
         }).save((err) => {
           if (err) {
             console.log("error", err);
