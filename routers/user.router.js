@@ -78,7 +78,38 @@ router.post("/login", authenticateSchema, authenticate);
  */
 router.post("/register", register);
 
+/**
+ * @swagger
+ * /api/user/getbyId/{id}:
+ *   get:
+ *     summary: Lấy thông tin người dùng theo ID
+ *     description: Lấy thông tin người dùng từ cơ sở dữ liệu dựa trên ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID của người dùng
+ *         schema:
+ *           type: ObjectId
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: ObjectId
+ *                 username:
+ *                   type: string
+ *                 name:
+ *                   type: string
+ *       404:
+ *         description: Người dùng không tồn tại
+ */
 router.get("/getbyId/:id", getByIdUser);
+
 router.put("/update/:id", updateUser);
 router.delete("/delete/:id", deleteUser);
 router.get("/getpaging", getpagingUser);

@@ -61,7 +61,7 @@ const register = async (req, res , next) => {
 
 const getByIdUser = async (req, res , next) => {
   try {
-    const id = req.query.id
+    const id = req.params.id
     if(id){
       const result = await UserModal.findById(id)
       return res.status(200).json({
