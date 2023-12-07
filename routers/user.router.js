@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router()
-const {authenticateSchema, authenticate,register,getByIdUser,updateUser,deleteUser,getpagingUser} = require("../controllers/user.controller")
+const {authenticateSchema, authenticate,register,getByIdUser,updateUser,deleteUser,getpagingUser,logout} = require("../controllers/user.controller")
 const authorize = require("../middleware/authorize");
 
 /**
@@ -108,10 +108,11 @@ router.post("/register", register);
  *       404:
  *         description: Người dùng không tồn tại
  */
-router.get("/getbyId/:id", getByIdUser);
+router.get("/getbyId",authorize(), getByIdUser);
 
 router.put("/update/:id", updateUser);
 router.delete("/delete/:id", deleteUser);
 router.get("/getpaging", getpagingUser);
+router.post("/logout", logout);
 
 module.exports = router

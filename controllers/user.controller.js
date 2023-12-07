@@ -2,6 +2,7 @@ const validateRequest = require("../middleware/validate-request");
 const userService = require("../services/user.service");
 const Joi = require("joi");
 const UserModal = require("../models/user.model")
+const refreshToken = require("../models/refreshToken.model")
 
 function authenticateSchema(req, res, next) {
   const schema = Joi.object({
@@ -61,7 +62,7 @@ const register = async (req, res , next) => {
 
 const getByIdUser = async (req, res , next) => {
   try {
-    const id = req.params.id
+    const id = req.user.id
     if(id){
       const result = await UserModal.findById(id)
       return res.status(200).json({
@@ -161,7 +162,19 @@ const getpagingUser = async (req, res , next) => {
   }
 }
 
-
+const logout = async (req, res , next) => {
+  try {
+    const {userId} = req.body
+    if(userId){
+       await refreshToken.findOneAndDelete({user: userId})
+      return res.status(200).json({status: 1})
+    }
+   
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json()
+  }
+}
 
 module.exports = {
   authenticateSchema,
@@ -170,5 +183,6 @@ module.exports = {
   getByIdUser,
   updateUser,
   deleteUser,
-  getpagingUser
+  getpagingUser,
+  logout
 };
