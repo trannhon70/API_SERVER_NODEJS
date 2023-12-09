@@ -9,7 +9,11 @@ require("dotenv").config();
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const fileUpload = require("express-fileupload");
+const Fingerprint = require("express-fingerprint");
+const path = require ('path');
+const expressFileUpload = require('express-fileupload')
 
+// bring routes
 const userRouter = require("./routers/user.router");
 const roleRouter = require("./routers/role.router")
 const brandRouter = require("./routers/brand.router");
@@ -40,13 +44,17 @@ const corsOptions = {
     origin: origin_urls,
     preflightContinue: false,
   };
+
+
+
   const  app = express();
   const specs = swaggerJsdoc(options);
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
   //cors
   app.use(cors(corsOptions));
   app.use(fileUpload());
-  // const 
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: false }));
 
 const server = require("http").createServer(app)
 if (process.env.NODE_ENV === "production") {

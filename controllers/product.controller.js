@@ -1,10 +1,41 @@
 const productModel = require("../models/product.model");
+const path = require("path");
+
 const createProduct = async (req, res, next) => {
   try {
     const name = req.body.name;
+    const timestamp = Date.now();
     const check = await productModel.findOne({ name });
     if (!check) {
-      const result = await productModel.create({ ...req.body });
+      var listImage = [];
+      if (req.files?.file) {
+        let file = req.files?.file;
+        if (file.length > 0) {
+          file?.map((item, index) => {
+            const newName = `${timestamp}_${item.name}`;
+            listImage.push(newName);
+            item?.mv(path.join(__dirname, `../uploads/${newName}`), (err) => {
+              console.log(err);
+            });
+          });
+        } else {
+          const newName = `${timestamp}_${file.name}`;
+          listImage.push(newName);
+          file?.mv(path.join(__dirname, `../uploads/${newName}`), (err) => {
+            console.log(err);
+          });
+        }
+      }
+      const body = {
+        name: req.body.name,
+        brand: req.body.brand,
+        price: req.body.price,
+        content: req.body.content,
+        quantity: req.body.quantity,
+        content: req.body.content,
+        image: listImage,
+      };
+      const result = await productModel.create(body);
       return res.status(200).json({
         result,
         status: 1,

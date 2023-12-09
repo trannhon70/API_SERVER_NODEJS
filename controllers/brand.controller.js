@@ -63,6 +63,7 @@ const deleteBrand = async (req, res, next) => {
     return res.status(404).json();
   }
 };
+
 const getpagingBrand = async (req, res, next) => {
   try {
     const pageIndex = req.query.pageIndex || 1;
@@ -72,18 +73,17 @@ const getpagingBrand = async (req, res, next) => {
     if (search) {
       searchObj.name = { $regex: ".*" + search + ".*" };
     }
-
     const data = await brandModel.find(searchObj)
       .skip(pageSize * pageIndex - pageSize)
       .limit(parseInt(pageSize))
       .sort({ createdAt: "desc" });
-    if (data.length == 0) {
-      pageIndex = 1;
-      data = await brandModel.find(searchObj)
-        .skip(pageSize * pageIndex - pageSize)
-        .limit(parseInt(pageSize))
-        .sort({ createdAt: "desc" });
-    }
+    // if (data.length == 0) {
+    //   pageIndex = 1;
+    //   data = await brandModel.find(searchObj)
+    //     .skip(pageSize * pageIndex - pageSize)
+    //     .limit(parseInt(pageSize))
+    //     .sort({ createdAt: "desc" });
+    // }
     const count = await brandModel.find(searchObj).countDocuments();
     let totalPages = Math.ceil(count / pageSize);
 
@@ -99,9 +99,47 @@ const getpagingBrand = async (req, res, next) => {
     return res.status(404).json();
   }
 };
+
+const getBrandById = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    if (id) {
+      const result = await brandModel.findById(id);
+      return res.status(200).json({
+        status: 1,
+        result,
+        message: "get brand by Id",
+      });
+    }
+    return res.status(400).json({
+      status: 0,
+      message: "Id not found!",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(404).json();
+  }
+};
+
+const getAllBrand = async (req, res, next) => {
+  try {
+      const result = await brandModel.find();
+      return res.status(200).json({
+        status: 1,
+        result,
+        message: "get brand by Id",
+      });
+   
+  } catch (error) {
+    console.log(error);
+    return res.status(404).json();
+  }
+};
 module.exports = {
   createBrand,
   updateBrand,
   deleteBrand,
   getpagingBrand,
+  getBrandById,
+  getAllBrand
 };
