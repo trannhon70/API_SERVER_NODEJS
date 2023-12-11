@@ -71,19 +71,13 @@ const getpagingBrand = async (req, res, next) => {
     const search = req.query.search || "";
     let searchObj = {};
     if (search) {
-      searchObj.name = { $regex: ".*" + search + ".*" };
+      searchObj.name = { $regex: new RegExp(search, 'i') };
     }
     const data = await brandModel.find(searchObj)
       .skip(pageSize * pageIndex - pageSize)
       .limit(parseInt(pageSize))
       .sort({ createdAt: "desc" });
-    // if (data.length == 0) {
-    //   pageIndex = 1;
-    //   data = await brandModel.find(searchObj)
-    //     .skip(pageSize * pageIndex - pageSize)
-    //     .limit(parseInt(pageSize))
-    //     .sort({ createdAt: "desc" });
-    // }
+    
     const count = await brandModel.find(searchObj).countDocuments();
     let totalPages = Math.ceil(count / pageSize);
 

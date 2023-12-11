@@ -66,6 +66,7 @@ app.use(morgan("dev"))
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, `uploads`)))
 //db
 mongoose.set("strictQuery", false);
 mongoose.connect(process.env.DATABASE_CLOUD, function(err){
