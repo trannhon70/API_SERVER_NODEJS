@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router()
-const {createRole,} = require("../controllers/role.controller")
+const {createRole,getAllRole} = require("../controllers/role.controller")
 const authorize = require("../middleware/authorize");
 
 /**
@@ -38,5 +38,6 @@ const authorize = require("../middleware/authorize");
  *         description: Lỗi máy chủ
  */
 router.post("/create", authorize(), createRole);
+router.get("/getAll", authorize(), getAllRole);
 
 module.exports = router

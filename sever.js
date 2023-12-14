@@ -109,7 +109,20 @@ function initial(){
                     console.log("error", err);
                   }
                   console.log("add user admin");
-            })
+            },
+           
+            )
+            new userModel( {
+              username:"User",
+              password: bcrypt.hashSync("123123",10),
+              name: "Trần Văn A",
+              role: "User",
+          }).save((err)=>{
+              if (err) {
+                  console.log("error", err);
+                }
+                console.log("add user admin");
+          }  )
         }
     })
     

@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router()
-const {authenticateSchema, authenticate,register,getByIdUser,updateUser,deleteUser,getpagingUser,logout} = require("../controllers/user.controller")
+const {authenticateSchema, authenticate,register,getByIdUser,updateUser,deleteUser,getpagingUser,logout, createUser} = require("../controllers/user.controller")
 const authorize = require("../middleware/authorize");
 
 /**
@@ -77,6 +77,7 @@ router.post("/login", authenticateSchema, authenticate);
  *         description: Lỗi trong quá trình đăng ký người dùng
  */
 router.post("/register", register);
+router.post("/create-user", createUser);
 
 /**
  * @swagger

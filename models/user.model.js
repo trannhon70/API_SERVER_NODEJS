@@ -15,11 +15,22 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: true
         },
+        date: {
+            type: Date,
+        },
         email:{
+            type: String,
+            unique: true,
+        },
+        phone:{
+            type: String,
+            unique: true,
+        },
+        address:{
             type: String
         },
         role: {
-            type: String
+            type : mongoose.Types.ObjectId,  ref: 'Role'
         },
         avatar: {
             type: String

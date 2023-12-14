@@ -176,6 +176,17 @@ const logout = async (req, res , next) => {
   }
 }
 
+const createUser = async (req, res , next) => {
+  try {
+   console.log(req.files, 'file');
+   console.log(req.body, 'body');
+   
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json()
+  }
+}
+
 module.exports = {
   authenticateSchema,
   authenticate,
@@ -184,5 +195,6 @@ module.exports = {
   updateUser,
   deleteUser,
   getpagingUser,
-  logout
+  logout,
+  createUser
 };
