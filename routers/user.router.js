@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router()
-const {authenticateSchema, authenticate,register,getByIdUser,updateUser,deleteUser,getpagingUser,logout, createUser} = require("../controllers/user.controller")
+const {authenticateSchema, authenticate,register,getByIdUser,updateUser,deleteUser,getpagingUser,logout, createUser, verify} = require("../controllers/user.controller")
 const authorize = require("../middleware/authorize");
 
 /**
@@ -78,6 +78,7 @@ router.post("/login", authenticateSchema, authenticate);
  */
 router.post("/register", register);
 router.post("/create-user", createUser);
+router.get("/verify", verify);
 
 /**
  * @swagger

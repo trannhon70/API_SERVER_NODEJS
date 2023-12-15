@@ -2,7 +2,20 @@ const validateRequest = require("../middleware/validate-request");
 const userService = require("../services/user.service");
 const Joi = require("joi");
 const UserModal = require("../models/user.model")
-const refreshToken = require("../models/refreshToken.model")
+const refreshToken = require("../models/refreshToken.model");
+const userModel = require("../models/user.model");
+const path = require("path");
+const bcrypt = require("bcryptjs");
+var nodemailer = require('nodemailer');
+const mailer = require('../utils/mailer')
+
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'nhontrau03@gmail.com',
+    pass: '0968222502n'
+  }
+});
 
 function authenticateSchema(req, res, next) {
   const schema = Joi.object({
@@ -178,14 +191,97 @@ const logout = async (req, res , next) => {
 
 const createUser = async (req, res , next) => {
   try {
-   console.log(req.files, 'file');
-   console.log(req.body, 'body');
+   const {username, phone, email} = req.body;
+   const timestamp = Date.now();
+   const check = await userModel.findOne({ username });
+   const checkPhone = await userModel.findOne({ phone });
+   const checkEmail = await userModel.findOne({ email });
+   if(checkPhone){
+    return res.status(200).json({
+      status: 0,
+      message: "Số điện thoại đã được đăng ký!",
+    });
+   }
+   if(checkEmail){
+    return res.status(200).json({
+      status: 0,
+      message: "Email này đã được đăng ký!",
+    });
+   }
+
+   if (!check) {
+    let file = req.files?.file;
+    const newName = `${timestamp}_${file?.name}`;
+     if (req.files?.file) {
+      
+        
+         file?.mv(path.join(__dirname, `../uploads/${newName}`), (err) => {
+           console.log(err);
+         });
+         
+     }
+     const body = {
+      username: req.body.username,
+      password: bcrypt.hashSync(req.body.password,10),
+      name: req.body.name,
+      date: req.body.date,
+      email: req.body.email,
+      phone: req.body.phone,
+      address: req.body.address,
+      avatar: newName,
+    };
+   
+    
+    const result = await userModel.create(body,(err, user)=> {
+      if (!err) {
+        bcrypt.hash(req.body.email, 10).then((hashedEmail) => {
+            console.log(`${process.env.CLIENT_DEV_URL}/verify?email=${user.email}&token=${hashedEmail}`);
+            mailer.sendMail(user.email, "Verify Email", `<a href="${process.env.CLIENT_DEV_URL}/xac-thuc-tai-khoan?email=${user.email}&token=${hashedEmail}"> Vui long click vào đây để xác thực tài khoản của bạn! </a>`)
+        });
+        
+    }
+    });
+    return res.status(200).json({
+      result,
+      status: 1,
+      message: "create product success!",
+    });
+   }
+
+  
+   return res.status(200).json({
+     status: 0,
+     message: "Tên đăng nhập đã tồn tại!",
+   });
    
   } catch (error) {
     console.log(error);
     return res.status(500).json()
   }
 }
+
+const verify = async (req, res) => {
+  bcrypt.compare(req.query.email, req.query.token, async (err, result) => {
+    if (result === true) {
+      try {
+        const user = await userModel.findOne({ email: req.query.email });
+        if (user) {
+          user.emailVeryfied = true;
+          const reusult = await user.save();
+          return res.status(200).json({
+            status: 1,
+            reusult
+          })
+        }
+      } catch (error) {
+        console.error(error);
+        res.redirect('/error');
+      }
+    } else {
+      res.redirect('/404');
+    }
+  });
+};
 
 module.exports = {
   authenticateSchema,
@@ -196,5 +292,6 @@ module.exports = {
   deleteUser,
   getpagingUser,
   logout,
-  createUser
+  createUser,
+  verify
 };
