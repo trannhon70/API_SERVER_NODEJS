@@ -103,7 +103,8 @@ function initial(){
                 username:"admin",
                 password: bcrypt.hashSync("123123",10),
                 name: "Trần Xuân Nhơn",
-                role: "Admin",
+                role: "6568b01ec7741ba79aa6fcab",
+                emailVeryfied: true
             }).save((err)=>{
                 if (err) {
                     console.log("error", err);

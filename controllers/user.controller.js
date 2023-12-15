@@ -77,7 +77,7 @@ const getByIdUser = async (req, res , next) => {
   try {
     const id = req.user.id
     if(id){
-      const result = await UserModal.findById(id)
+      const result = await UserModal.findById(id).populate('role')
       return res.status(200).json({
         status: 1,
         message: "get by id success!",
@@ -147,7 +147,9 @@ const getpagingUser = async (req, res , next) => {
     const pageSize = Number(req.query?.pageSize) || 10;
     const pageIndex = Number(req.query?.pageIndex) || 1;
     const search = req.query?.search || "";
-    const searchObj = {}
+    const searchObj = {
+      role : '6568b01ec7741ba79aa6fcac'
+    }
     if(req.query?.search){
       searchObj.username = { $regex: ".*" + search + ".*" };
     }
@@ -226,6 +228,7 @@ const createUser = async (req, res , next) => {
       name: req.body.name,
       date: req.body.date,
       email: req.body.email,
+      role: req.body.role,
       phone: req.body.phone,
       address: req.body.address,
       avatar: newName,
@@ -236,7 +239,7 @@ const createUser = async (req, res , next) => {
       if (!err) {
         bcrypt.hash(req.body.email, 10).then((hashedEmail) => {
             console.log(`${process.env.CLIENT_DEV_URL}/verify?email=${user.email}&token=${hashedEmail}`);
-            mailer.sendMail(user.email, "Verify Email", `<a href="${process.env.CLIENT_DEV_URL}/xac-thuc-tai-khoan?email=${user.email}&token=${hashedEmail}"> Vui long click vào đây để xác thực tài khoản của bạn! </a>`)
+            mailer.sendMail(user.email, "Mail xác thực tài khoản của bạn", `<a href="${process.env.CLIENT_DEV_URL}/xac-thuc-tai-khoan?email=${user.email}&token=${hashedEmail}">Vui lòng click vào link này để xác thực tài khoản của bạn! </a>`)
         });
         
     }
