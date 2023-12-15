@@ -123,7 +123,7 @@ const deleteUser = async (req, res , next) => {
   try {
     const id = req.params.id
     if(id){
-      const result = UserModal.findByIdAndDelete(id)
+      const result = await UserModal.findByIdAndDelete(id)
       return res.status(200).json({
         status: 1,
         message: "delete id success!",
@@ -151,16 +151,16 @@ const getpagingUser = async (req, res , next) => {
       role : '6568b01ec7741ba79aa6fcac'
     }
     if(req.query?.search){
-      searchObj.username = { $regex: ".*" + search + ".*" };
+      searchObj.$or = [
+        { name: { $regex: new RegExp(search, 'i') } },
+        { email: { $regex: new RegExp(search, 'i') } },
+        { phone: { $regex: new RegExp(search, 'i') } }
+      ];
     }
 
     const data = await UserModal.find(searchObj).skip(pageSize * pageIndex - pageSize)
     .limit(parseInt(pageSize)).sort({createdAt: "desc"})
-    if(data.length == 0){
-      pageIndex = 1
-      data = await UserModal.find(searchObj).skip(pageSize * pageIndex - pageSize)
-      .limit(parseInt(pageSize)).sort({createdAt: "desc"})
-    }
+
     const count = await UserModal.find(searchObj).countDocuments();
     let totalPages = Math.ceil(count / pageSize);
 
