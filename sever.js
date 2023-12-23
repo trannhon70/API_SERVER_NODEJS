@@ -18,14 +18,18 @@ const userRouter = require("./routers/user.router");
 const roleRouter = require("./routers/role.router")
 const brandRouter = require("./routers/brand.router");
 const productRouter = require("./routers/product.router")
+const orderRouter = require("./routers/order.router")
+
 const userModel = require("./models/user.model");
 const roleModel = require("./models/role.model");
 const options = require("./config/options");
+
 var origin_urls;
 if(process.env.NODE_ENV == "development"){
     origin_urls =  [
         `${process.env.CLIENT_DEV_URL}`,
         `${process.env.ADMIN_DEV_URL}`,
+        'http://localhost:3000/'
       ];
 }
 
@@ -94,6 +98,7 @@ app.use("/api/user", userRouter);
 app.use("/api/role", roleRouter);
 app.use("/api/brand", brandRouter);
 app.use("/api/product", productRouter);
+app.use("/api/order", orderRouter);
 
 
 function initial(){

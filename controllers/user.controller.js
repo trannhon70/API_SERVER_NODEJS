@@ -126,7 +126,7 @@ const deleteUser = async (req, res , next) => {
       const result = await UserModal.findByIdAndDelete(id)
       return res.status(200).json({
         status: 1,
-        message: "delete id success!",
+        message: "Xóa người dùng thành công!",
         result
       })
     }

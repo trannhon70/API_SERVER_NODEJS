@@ -29,8 +29,12 @@ function basicDetails(user) {
   }
 async function authenticate({ username, password, ipAddress }) {
     const user = await User.findOne({ username : username }).populate("role");
-    
-    
+    if(user.emailVeryfied === false){
+      return {
+        status: 0,
+        message: "Tài khoản chưa được kích hoạt",
+      };
+    }
     if (!user || !bcrypt.compareSync(password, user.password)) {
       return {
         status: 0,
