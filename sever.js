@@ -9,7 +9,6 @@ require("dotenv").config();
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const fileUpload = require("express-fileupload");
-const Fingerprint = require("express-fingerprint");
 const path = require ('path');
 const expressFileUpload = require('express-fileupload')
 
